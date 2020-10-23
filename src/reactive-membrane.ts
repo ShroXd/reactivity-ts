@@ -1,16 +1,16 @@
 import { isArray, isFunction, isUndefined, ObjectDefineProperty, unwrapProxy } from './utils';
 import { ReactiveHandler } from './reactive-handler';
 
-export type ReactiveMembraneAccessObserver = (obj: any, key: any) => void;
-export type ReactiveMembraneMutationObserver = (obj: any, key: any) => void;
+export type ReactiveMembraneAccessObserver = (target: any, key: any) => void;
+export type ReactiveMembraneMutationObserver = (target: any, key: any) => void;
 export type ReactiveMembraneDistortion = (value: any) => any;
 export type ReactiveMembraneValueIsObservable = (value: any) => boolean;
 
 export interface ReactiveMembraneInit {
-  accessObserver: ReactiveMembraneAccessObserver;
-  mutationObserver: ReactiveMembraneMutationObserver;
-  distortion: ReactiveMembraneDistortion;
-  valueIsObservable: ReactiveMembraneValueIsObservable;
+  accessObserver?: ReactiveMembraneAccessObserver;
+  mutationObserver?: ReactiveMembraneMutationObserver;
+  distortion?: ReactiveMembraneDistortion;
+  valueIsObservable?: ReactiveMembraneValueIsObservable;
 }
 
 interface ReactiveState {
@@ -21,11 +21,11 @@ function defaultValueIsObservable(value: any): boolean {
   return !(value === null || typeof value !== 'object');
 }
 
-const defaultAccessObserver: ReactiveMembraneAccessObserver = (obj: any, key: any) => {
+const defaultAccessObserver: ReactiveMembraneAccessObserver = (target: any, key: any) => {
   // do nothing
 };
 
-const defaultMutationObserver: ReactiveMembraneMutationObserver = (obj: any, key: any) => {
+const defaultMutationObserver: ReactiveMembraneMutationObserver = (target: any, key: any) => {
   // do nothing
 };
 
