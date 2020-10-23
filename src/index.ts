@@ -1,3 +1,3 @@
-export const hello = () => {
-  return 'Hello World';
-};
+import { ReactiveMembrane } from './reactive-membrane';
+
+export { ReactiveMembrane };
