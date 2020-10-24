@@ -1,6 +1,6 @@
 {
   "name": "reactivity-ts",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Reactivity system written in typescript",
   "main": "lib/bundle.umd.js",
   "module": "lib/bundle.esm.js",
