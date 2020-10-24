@@ -53,7 +53,7 @@ export class ReactiveMembrane {
     }
   }
 
-  getProxy(value: any) {
+  reactive(value: any) {
     const unwrappedValue = unwrapProxy(value);
     const distortedValue = this.distortion(value);
     if (this.valueIsObservable(distortedValue)) {

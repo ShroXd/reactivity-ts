@@ -13,6 +13,7 @@ export abstract class BaseHandler {
 
   // Abstract Traps
   abstract set(target: ReactiveMembraneShadowTarget, property: PropertyKey, receiver): boolean;
+  abstract deleteProperty(target: ReactiveMembraneShadowTarget, property: PropertyKey): boolean;
 
   // Abstract utility methods
   abstract wrapValue(value: any): any;

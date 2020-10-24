@@ -5,14 +5,14 @@ describe("constructor", () => {
     it ("no config", () => {
         const raw = { a: 1 };
         const membrane = new ReactiveMembrane();
-        const wet = membrane.getProxy(raw);
+        const wet = membrane.reactive(raw);
         expect(wet.a).toBe(1);
     })
 
     it ("empty config", () => {
         const raw = { a: 1 };
         const membrane = new ReactiveMembrane({});
-        const wet = membrane.getProxy(raw);
+        const wet = membrane.reactive(raw);
         expect(wet.a).toBe(1);
     })
 })
@@ -26,7 +26,7 @@ describe("API", () => {
                 fn();
             }
         })
-        const wet = membrane.getProxy(raw);
+        const wet = membrane.reactive(raw);
         wet.a;
         expect(fn).toHaveBeenCalledTimes(1);
     })
@@ -39,7 +39,7 @@ describe("API", () => {
                 fn();
             }
         })
-        const wet = membrane.getProxy(raw);
+        const wet = membrane.reactive(raw);
         wet.a = 2;
         expect(fn).toHaveBeenCalledTimes(1);
     })
@@ -56,7 +56,7 @@ describe("API", () => {
                 return value;
             }
         })
-        const wet = membrane.getProxy(raw);
+        const wet = membrane.reactive(raw);
         expect(fn).toHaveBeenCalledTimes(1);
         expect(wet.a).toBe(10);
     })
@@ -76,7 +76,7 @@ describe("API", () => {
                 }
             }
         })
-        const wet = membrane.getProxy(raw);
+        const wet = membrane.reactive(raw);
         wet.a;
         wet.b.c;
         expect(fn).toHaveBeenCalledTimes(1);
@@ -97,7 +97,7 @@ describe("API", () => {
                 }
             }
         })
-        const wet = membrane.getProxy(raw);
+        const wet = membrane.reactive(raw);
         wet.a;
         expect(fn).not.toBeCalled();
     })
