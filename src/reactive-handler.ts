@@ -23,7 +23,7 @@ export class ReactiveHandler extends BaseHandler {
       membrane: { mutationObserver },
     } = this;
 
-    delete target[property];
+    delete originalTarget[property];
     mutationObserver(originalTarget, property);
 
     return true;

@@ -51,4 +51,19 @@ describe("ReactiveHandler", () => {
         expect(wet.b).toStrictEqual(2);
         expect(fn).toHaveBeenCalledTimes(1);
     })
+
+    it ("delete", () => {
+        const fn = jest.fn();
+        const raw = { a: 1 };
+        const membrane = new ReactiveMembrane({
+            mutationObserver(target, key) {
+                fn();
+            }
+        });
+        const wet = membrane.reactive(raw);
+        delete wet.a;
+
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(wet.a).toStrictEqual(undefined);
+    })
 })
