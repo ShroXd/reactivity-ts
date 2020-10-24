@@ -58,4 +58,45 @@ describe("constructor", () => {
         expect(fn).toHaveBeenCalledTimes(1);
         expect(wet.a).toBe(10);
     })
+
+    it ("default valueIsObservable can solve nested", () => {
+        const fn = jest.fn();
+        const raw = {
+            a: 1,
+            b: {
+                c: 2
+            }
+        }
+        const membrane = new ReactiveMembrane({
+            accessObserver(target, key) {
+                if (target[key] === 2) {
+                    fn();
+                }
+            }
+        })
+        const wet = membrane.getProxy(raw);
+        wet.a;
+        wet.b.c;
+        expect(fn).toHaveBeenCalledTimes(1);
+    })
+
+    it ("make value reactive when access", () => {
+        const fn = jest.fn();
+        const raw = {
+            a: 1,
+            b: {
+                c: 2
+            }
+        }
+        const membrane = new ReactiveMembrane({
+            accessObserver(target, key) {
+                if (key === "b") {
+                    fn();
+                }
+            }
+        })
+        const wet = membrane.getProxy(raw);
+        wet.a;
+        expect(fn).not.toBeCalled();
+    })
 })
