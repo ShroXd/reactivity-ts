@@ -1,8 +1,9 @@
 import { isArray, isFunction, isUndefined, ObjectDefineProperty, unwrapProxy } from './utils';
 import { ReactiveHandler } from './reactive-handler';
+import { isRef, RefHandler } from './ref-handler';
 
-export type ReactiveMembraneAccessObserver = (target: any, key: any) => void;
-export type ReactiveMembraneMutationObserver = (target: any, key: any) => void;
+export type ReactiveMembraneAccessObserver = (target: any, key?: any) => void;
+export type ReactiveMembraneMutationObserver = (target: any, key?: any) => void;
 export type ReactiveMembraneDistortion = (value: any) => any;
 export type ReactiveMembraneValueIsObservable = (value: any) => boolean;
 
@@ -61,6 +62,13 @@ export class ReactiveMembrane {
       return o.reactive;
     }
     return distortedValue;
+  }
+
+  ref(value: any) {
+    if (isRef(value)) {
+      return value;
+    }
+    return new RefHandler(this, value);
   }
 
   private getReactiveState(unwrappedValue: any, distortedValue: any): ReactiveState {
