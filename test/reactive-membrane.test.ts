@@ -15,7 +15,9 @@ describe("constructor", () => {
         const wet = membrane.getProxy(raw);
         expect(wet.a).toBe(1);
     })
+})
 
+describe("API", () => {
     it ("access observer", () => {
         const fn = jest.fn();
         const raw = { a: 1 };
