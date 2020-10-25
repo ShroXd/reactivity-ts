@@ -2,7 +2,7 @@
 import { ReactiveMembrane } from "../src";
 
 describe("ShallowReactiveHandler", () => {
-    it ("only root level properties are reactive", () => {
+    it ("only root level properties can trigger mutation observer", () => {
         const fn = jest.fn();
         const raw = {
             a: 1,
