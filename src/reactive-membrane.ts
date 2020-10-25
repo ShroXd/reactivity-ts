@@ -1,6 +1,7 @@
 import { isArray, isFunction, isUndefined, ObjectDefineProperty, unwrapProxy } from './utils';
 import { ReactiveHandler } from './reactive-handler';
 import { isRef, RefHandler } from './ref-handler';
+import { ReadonlyHandler } from './readonly-handler';
 
 export type ReactiveMembraneAccessObserver = (target: any, key?: any) => void;
 export type ReactiveMembraneMutationObserver = (target: any, key?: any) => void;
@@ -32,10 +33,6 @@ const defaultMutationObserver: ReactiveMembraneMutationObserver = (target: any, 
 
 const defaultDistortion: ReactiveMembraneDistortion = (value: any) => value;
 
-const createShadowTarget = (value: any): any => {
-  return isArray(value) ? [] : {};
-};
-
 export class ReactiveMembrane {
   accessObserver: ReactiveMembraneAccessObserver = defaultAccessObserver;
   mutationObserver: ReactiveMembraneMutationObserver = defaultMutationObserver;
@@ -58,8 +55,16 @@ export class ReactiveMembrane {
     const unwrappedValue = unwrapProxy(value);
     const distortedValue = this.distortion(value);
     if (this.valueIsObservable(distortedValue)) {
-      const o = this.getReactiveState(unwrappedValue, distortedValue);
-      return o.reactive;
+      return this.getReactiveState(unwrappedValue, distortedValue);
+    }
+    return distortedValue;
+  }
+
+  readonly(value: any) {
+    const unwrappedValue = unwrapProxy(value);
+    const distortedValue = this.distortion(value);
+    if (this.valueIsObservable(distortedValue)) {
+      return this.getReadonlyState(unwrappedValue, distortedValue);
     }
     return distortedValue;
   }
@@ -71,22 +76,21 @@ export class ReactiveMembrane {
     return new RefHandler(this, value);
   }
 
-  private getReactiveState(unwrappedValue: any, distortedValue: any): ReactiveState {
+  private getReactiveState(unwrappedValue: any, distortedValue: any) {
     const { objectGraph } = this;
-    let reactiveState = objectGraph.get(distortedValue);
+    const reactiveState = objectGraph.get(distortedValue);
     if (reactiveState) return reactiveState;
 
-    const membrane = this;
-    reactiveState = {
-      get reactive() {
-        const reactiveHandler = new ReactiveHandler(membrane, distortedValue);
-        const proxy = new Proxy(createShadowTarget(distortedValue), reactiveHandler);
-        ObjectDefineProperty(this, 'reactive', { value: proxy });
-        return proxy;
-      },
-    } as ReactiveState;
+    const reactiveHandler = new ReactiveHandler(this, distortedValue);
+    return new Proxy(distortedValue, reactiveHandler);
+  }
 
-    objectGraph.set(distortedValue, reactiveState);
-    return reactiveState;
+  private getReadonlyState(unwrappedValue: any, distortedValue: any) {
+    const { objectGraph } = this;
+    const readonlyState = objectGraph.get(distortedValue);
+    if (readonlyState) return readonlyState;
+
+    const readonlyHandler = new ReadonlyHandler(this, distortedValue);
+    return new Proxy(distortedValue, readonlyHandler);
   }
 }
