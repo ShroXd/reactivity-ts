@@ -114,12 +114,60 @@ const membrane = new ReactiveMembrane({
     accessObserver(target, key) {
         console.log("access!");
     },
-     mutationObserver(target, key) {
-         console.log("mutation!");
-     }
+    mutationObserver(target, key) {
+        console.log("mutation!");
+    }
 })
 const wet = membrane.ref(raw);
 
 wet;            // access!
 wet.value = 2;  // mutation!
 ```
+
+### Shallow Reactive Proxy
+
+Only create reactive proxy for root level properties.
+
+```javascript
+import { ReactiveMembrane } from "reactivity-ts";
+
+const raw = {
+    a: 1,
+    b: {
+        c: 2
+    }
+}
+const membrane = new ReactiveMembrane({
+    mutationObserver(target, key) {
+        console.log("mutation!");
+    }
+})
+const wet = membrane.shallowReactive(raw);
+
+wet.a = 3;      // mutation!
+wet.b.c = 3;
+```
+
+__NOTE__: If you want to change the value of `raw.b.c`, you will access `raw.b`. So the `accessObserver` will always be trigger.
+
+### Shallow Readonly Proxy
+
+Only create readonly proxy for root level properties.
+
+```javascript
+import { ReactiveMembrane } from "reactivity-ts";
+
+const raw = {
+    a: 1,
+    b: {
+        c: 2
+    }
+}
+const membrane = new ReactiveMembrane();
+const wet = membrane.shallowReadonly(raw);
+
+wet.a = 3;      // throw error in development mode, and does nothing in production mode.
+wet.b.c = 3;
+```
+
+__NOTE__: If you want to change the value of `raw.b.c`, you will access `raw.b`. So the `accessObserver` will always be trigger.
