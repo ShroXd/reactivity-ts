@@ -2,6 +2,8 @@ import { isArray, isFunction, isUndefined, ObjectDefineProperty, unwrapProxy } f
 import { ReactiveHandler } from './reactive-handler';
 import { isRef, RefHandler } from './ref-handler';
 import { ReadonlyHandler } from './readonly-handler';
+import { ShallowReactiveHandler } from './shallow-reactive-handler';
+import { ShallowReadonlyHandler } from './shallow-readonly-handler';
 
 export type ReactiveMembraneAccessObserver = (target: any, key?: any) => void;
 export type ReactiveMembraneMutationObserver = (target: any, key?: any) => void;
@@ -76,21 +78,43 @@ export class ReactiveMembrane {
     return new RefHandler(this, value);
   }
 
-  private getReactiveState(unwrappedValue: any, distortedValue: any) {
+  shallowReactive(value: any) {
+    const unwrappedValue = unwrapProxy(value);
+    const distortedValue = this.distortion(value);
+    if (this.valueIsObservable(distortedValue)) {
+      return this.getReactiveState(unwrappedValue, distortedValue, true);
+    }
+    return distortedValue;
+  }
+
+  shallowReadonly(value: any) {
+    const unwrappedValue = unwrapProxy(value);
+    const distortedValue = this.distortion(value);
+    if (this.valueIsObservable(distortedValue)) {
+      return this.getReadonlyState(unwrappedValue, distortedValue, true);
+    }
+    return distortedValue;
+  }
+
+  private getReactiveState(unwrappedValue: any, distortedValue: any, isShallow: boolean = false) {
     const { objectGraph } = this;
     const reactiveState = objectGraph.get(distortedValue);
     if (reactiveState) return reactiveState;
 
-    const reactiveHandler = new ReactiveHandler(this, distortedValue);
+    const reactiveHandler = isShallow
+      ? new ShallowReactiveHandler(this, distortedValue)
+      : new ReactiveHandler(this, distortedValue);
     return new Proxy(distortedValue, reactiveHandler);
   }
 
-  private getReadonlyState(unwrappedValue: any, distortedValue: any) {
+  private getReadonlyState(unwrappedValue: any, distortedValue: any, isShallow: boolean = false) {
     const { objectGraph } = this;
     const readonlyState = objectGraph.get(distortedValue);
     if (readonlyState) return readonlyState;
 
-    const readonlyHandler = new ReadonlyHandler(this, distortedValue);
+    const readonlyHandler = isShallow
+      ? new ShallowReadonlyHandler(this, distortedValue)
+      : new ReadonlyHandler(this, distortedValue);
     return new Proxy(distortedValue, readonlyHandler);
   }
 }
