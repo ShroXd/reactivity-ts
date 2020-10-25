@@ -2,7 +2,7 @@ import { BaseHandler, ReactiveMembraneShadowTarget } from './base-handler';
 
 export class ReadonlyHandler extends BaseHandler {
   wrapValue(value: any): any {
-    return value;
+    return this.membrane.readonly(value);
   }
 
   set(target: ReactiveMembraneShadowTarget, property: PropertyKey, receiver): boolean {
