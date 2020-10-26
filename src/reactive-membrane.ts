@@ -1,9 +1,9 @@
 import { isArray, isFunction, isUndefined, ObjectDefineProperty, unwrapProxy } from './utils';
-import { ReactiveHandler } from './reactive-handler';
-import { isRef, RefHandler } from './ref-handler';
-import { ReadonlyHandler } from './readonly-handler';
-import { ShallowReactiveHandler } from './shallow-reactive-handler';
-import { ShallowReadonlyHandler } from './shallow-readonly-handler';
+import { ReactiveHandler } from './handler/reactive-handler';
+import { isRef, RefHandler } from './handler/ref-handler';
+import { ReadonlyHandler } from './handler/readonly-handler';
+import { ShallowReactiveHandler } from './handler/shallow-reactive-handler';
+import { ShallowReadonlyHandler } from './handler/shallow-readonly-handler';
 
 export type ReactiveMembraneAccessObserver = (target: any, key?: any) => void;
 export type ReactiveMembraneMutationObserver = (target: any, key?: any) => void;

@@ -22,6 +22,64 @@ describe("ReactiveHandler", () => {
         expect(wet1.a).toStrictEqual(wet2.a);
     })
 
+    it ("default valueIsObservable can solve nested", () => {
+        const fn = jest.fn();
+        const raw = {
+            a: 1,
+            b: {
+                c: 2
+            }
+        }
+        const membrane = new ReactiveMembrane({
+            accessObserver(target, key) {
+                if (target[key] === 2) {
+                    fn();
+                }
+            }
+        })
+        const wet = membrane.reactive(raw);
+        wet.a;
+        wet.b.c;
+        expect(fn).toHaveBeenCalledTimes(1);
+    })
+
+    it ("make value reactive when access", () => {
+        const fn = jest.fn();
+        const raw = {
+            a: 1,
+            b: {
+                c: 2
+            }
+        }
+        const membrane = new ReactiveMembrane({
+            accessObserver(target, key) {
+                if (key === "b") {
+                    fn();
+                }
+            }
+        })
+        const wet = membrane.reactive(raw);
+        wet.a;
+        expect(fn).not.toBeCalled();
+    })
+
+    it ("distortion", () => {
+        const fn = jest.fn();
+        const raw = { a: 1 };
+        const membrane = new ReactiveMembrane({
+            distortion(value) {
+                fn()
+                if (typeof value === "number") {
+                    return value * 10
+                }
+                return value;
+            }
+        })
+        const wet = membrane.reactive(raw);
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(wet.a).toBe(10);
+    })
+
     it ("has", () => {
         const fn = jest.fn();
         const raw = { a: 1 };

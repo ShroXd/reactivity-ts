@@ -1,4 +1,4 @@
-import { ReactiveMembrane } from './reactive-membrane';
+import { ReactiveMembrane } from '../reactive-membrane';
 
 export type ReactiveMembraneShadowTarget = object;
 
