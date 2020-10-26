@@ -148,7 +148,7 @@ wet.a = 3;      // mutation!
 wet.b.c = 3;
 ```
 
-__NOTE__: If you want to change the value of `raw.b.c`, you will access `raw.b`. So the `accessObserver` will always be trigger.
+__NOTE__: If you want to change the value of `raw.b.c`, you will access `raw.b` first. So the `accessObserver` will always be trigger.
 
 ### Shallow Readonly Proxy
 
@@ -170,4 +170,4 @@ wet.a = 3;      // throw error in development mode, and does nothing in producti
 wet.b.c = 3;
 ```
 
-__NOTE__: If you want to change the value of `raw.b.c`, you will access `raw.b`. So the `accessObserver` will always be trigger.
+__NOTE__: If you want to change the value of `raw.b.c`, you will access `raw.b` first. So the `accessObserver` will always be trigger.
