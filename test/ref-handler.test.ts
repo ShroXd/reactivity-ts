@@ -4,13 +4,12 @@ import { ReactiveMembrane } from "../src";
 describe("ref", () => {
     it ("ref accessObserver", () => {
         const fn = jest.fn();
-        const raw = 1;
         const membrane = new ReactiveMembrane({
             accessObserver(target) {
                 fn();
             }
         })
-        let wet = membrane.ref(raw);
+        let wet = membrane.ref(1);
         wet.value;
 
         expect(fn).toHaveBeenCalledTimes(1);
@@ -18,13 +17,12 @@ describe("ref", () => {
 
     it ("ref mutationObserver", () => {
         const fn = jest.fn();
-        const raw = 1;
         const membrane = new ReactiveMembrane({
             mutationObserver(target) {
                 fn();
             }
         })
-        let wet = membrane.ref(raw);
+        let wet = membrane.ref(1);
         wet.value = 2;
 
         expect(fn).toHaveBeenCalledTimes(1);
@@ -32,9 +30,8 @@ describe("ref", () => {
     })
 
     it ("should never rewrap a previously produced ref", () => {
-        const raw = 1;
         const membrane = new ReactiveMembrane();
-        const wet1 = membrane.ref(raw);
+        const wet1 = membrane.ref(1);
         const wet2 = membrane.ref(wet1);
 
         expect(wet1).toStrictEqual(wet2);

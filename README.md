@@ -109,7 +109,6 @@ Internally, we wrap `raw` as an object which has getter and setter function.
 ```javascript
 import { ReactiveMembrane } from "reactivity-ts";
 
-const raw = 1
 const membrane = new ReactiveMembrane({
     accessObserver(target, key) {
         console.log("access!");
@@ -118,7 +117,7 @@ const membrane = new ReactiveMembrane({
         console.log("mutation!");
     }
 })
-const wet = membrane.ref(raw);
+const wet = membrane.ref(1);
 
 wet;            // access!
 wet.value = 2;  // mutation!
